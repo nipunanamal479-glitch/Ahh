@@ -44,10 +44,22 @@ public class MainActivity extends AppCompatActivity {
         volumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+                if (fromUser) {
+                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+                }
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Screen එකට ආපහු ආවම, hardware button වලින් වෙනස් වුනු volume එකත් SeekBar එකට update කරනවා
+        SeekBar volumeBar = findViewById(R.id.volumeBar);
+        if (audioManager != null && volumeBar != null) {
+            volumeBar.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+        }
     }
 }
